@@ -1,3 +1,4 @@
+"use strict";
 // document.write('This is a javascript function from another file');
 
 // // creating variables 
@@ -168,7 +169,6 @@
 
 // arrays 
 
-// const listOfNames = ['Seth', 'Owuraku', 'Kofi', 'Ama'];
 // const listOfNumbers = [1,2,3,4,19,9.99,902];
 // const mixedArray = [ 'me', {  name: 'Seth' }, [ 1, 3, 5], null, undefined, 0, true ]
 
@@ -226,20 +226,93 @@ undefined
  */
 
 // objects 
+// const student = {
+//     name: 'Seth',
+//     level: 300,
+//     subjects: [ 'English', 'Maths'],
+//     isRegistered: true,
+//     displayInfo : function() {
+//         alert(`Student Name: ${this.name} Level: ${this.level} Registered: ${this.isRegistered}`);
+//     }
+// }
+
+// // dot notation
+// console.log(student.name);
+
+// student['name'];
+
+// const infoNeeded = 'level';
+// console.log(student[infoNeeded]);
+
+
+// function whatWasClicked(thisVariable){
+//     console.log(thisVariable);
+//     thisVariable.style.display = 'none';
+// }
+
+
+function display(){
+
+}
+
+const display = ( ) => {
+    console.log('Hello');
+}
+
+display();
+
+const displayName = name => {
+    console.log(name)
+}
+
+const displayNames = (firstname, lastname) => {
+    console.log(firstname, lastname)
+}
+
+
+const listOfNames = ['Seth', 'Owuraku', 'Kofi', 'Ama'];
+
+listOfNames.filter(function(name){ 
+    return name.includes('a');
+ });
+
+listOfNames.filter((name)=>{
+    return name.includes('a');
+});
+
+listOfNames.filter(name=>{
+    return name.includes('a');
+});
+
+listOfNames.filter(name=>name.includes('a'));
+
+// function sumOfTwoNumbers(num1, num2){
+//     return num1 + num2;
+// }
+
+// const sumOfTwoNumbers = (num1, num2) => {
+//     return num1 + num2;
+// }
+
+const sumOfTwoNumbers = (num1, num2) => num1 + num2;
+
+
+// const student = {
+//     name: 'Seth',
+//     level: 300,
+//     subjects: [ 'English', 'Maths'],
+//     isRegistered: true,
+//     displayInfo() {
+//         alert(`Student Name: ${this.name} Level: ${this.level} Registered: ${this.isRegistered}`);
+//     }
+// }
+
 const student = {
     name: 'Seth',
     level: 300,
     subjects: [ 'English', 'Maths'],
     isRegistered: true,
-    displayInfo : function() {
+    displayInfo: () => {
         alert(`Student Name: ${this.name} Level: ${this.level} Registered: ${this.isRegistered}`);
     }
 }
-
-// dot notation
-console.log(student.name);
-
-student['name'];
-
-const infoNeeded = 'level';
-console.log(student[infoNeeded]);
