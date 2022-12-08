@@ -2,12 +2,16 @@ let users = [
     {
         id: 1,
         name: 'Owuraku',
-        age: 20
+        age: 20,
+        email: 'o@test.com',
+        password: 'pass'
     },
      {
         id: 2,
         name: 'Seth',
-        age: 22
+        age: 22,
+        email: 's@test.com',
+        password: 'pass'
     },
 ];
 
@@ -52,6 +56,10 @@ const deleteUser = id => {
     return false;
 }
 
+const checkCredentialsAndReturnUser = (email, password) => {
+    return users.find(u => u.email == email && u.password == password);
+}
+
 module.exports = {
-    getOneUser, getUsers, addUser, editUser, deleteUser
+    getOneUser, getUsers, addUser, editUser, deleteUser, checkCredentialsAndReturnUser
 }

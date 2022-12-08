@@ -6,16 +6,15 @@ const app = express();
 // const { handleGet, handlePost, handleMyName } = require('./handler');
 const { sexMiddleware, ageMiddleware } = require('./middlewares');
 
-const userRoutes = require('./routes/user.routes')
+const appRouteHandler = require('./routes/index')
 
 app.use(bodyParser.json());
 app.use(cors());
 
-app.use('/users', userRoutes);
+app.use(appRouteHandler);
 
 
-// app.get('/applyforwar',sexMiddleware, handleApplyForWar, );
-// app.get('/viewgoodies', ageMiddleware ,handleViewGoodies);
+
         
 
 

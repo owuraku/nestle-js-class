@@ -1,4 +1,7 @@
-const { addUser, getUsers, getOneUser, deleteUser, editUser } = require('../user-data');
+
+const jwt = require('jsonwebtoken');
+
+const { addUser, getUsers, getOneUser, deleteUser, editUser, checkCredentialsAndReturnUser } = require('../user-data');
 
 class UserController {
     
@@ -55,8 +58,28 @@ const handleViewGoodies = (req, res) => {
     res.send('You are ready to view the good things in life');
 }
 
+const handleGetToken = (req,res) => {
+    const { email, password} = req.body;
+    if (!email || !password){
+        return res.status(400).send({message: 'Email/password required'});
+    }
+    const user = checkCredentialsAndReturnUser(email, password);
+
+    if(!user){
+        return res.status(400).send({message: 'Email/password is wrong'});
+    }
+    delete user.password;
+    const token = jwt.sign( user, 'secret', { expiresIn : '10m'});
+
+    res.send({token});
+}
+
+const handleWelcome = (req,res) => {
+    res.send({message: `Welcome, ${req.user.name}`});
+}
+
 
 module.exports = { 
-    handleApplyForWar, handleViewGoodies,
+    handleApplyForWar, handleViewGoodies, handleGetToken, handleWelcome,
     userController: new UserController()
 }
