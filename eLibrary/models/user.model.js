@@ -1,6 +1,5 @@
 const mongoose = require('mongoose');
 const bcrypt = require('bcrypt');
-const { User } = require('.');
 
 const UserSchema = mongoose.Schema({
 	name: {
@@ -10,15 +9,25 @@ const UserSchema = mongoose.Schema({
 	email: {
 		type: String,
 		required: true,
+		unique: true,
 	},
 	password: {
 		type: String,
 		required: true,
+		select: false,
 	},
 	role: {
 		type: String,
 		required: true,
 		default: 'user',
+	},
+	verified: {
+		type: Boolean,
+		required: true,
+		default: false,
+	},
+	verificationDate: {
+		type: Date,
 	},
 });
 
@@ -34,7 +43,7 @@ UserSchema.statics.verifyCredentialsAndReturnUser = async function (
 	password
 ) {
 	try {
-		const user = await this.findOne({ email });
+		const user = await this.findOne({ email }).select('+password');
 		if (!user) return null;
 		const isPasswordCorrect = await bcrypt.compare(password, user.password);
 		const userData = user.toJSON();
@@ -46,21 +55,25 @@ UserSchema.statics.verifyCredentialsAndReturnUser = async function (
 	}
 };
 
-const verifyCredentialsAndReturnUser = async (email, password) => {
-	try {
-		const user = await mongoose.model('user').findOne({ email });
-		if (!user) return null;
-		const isPasswordCorrect = await bcrypt.compare(password, user.password);
-		const userData = user.toJSON();
-		delete userData.password;
-		return isPasswordCorrect ? userData : null;
-	} catch (error) {
-		console.log(error);
-		return null;
-	}
+UserSchema.statics.findByEmail = async function (email) {
+	return await this.findOne({ email });
 };
+
+// const verifyCredentialsAndReturnUser = async (email, password) => {
+// 	try {
+// 		const user = await mongoose.model('user').findOne({ email });
+// 		if (!user) return null;
+// 		const isPasswordCorrect = await bcrypt.compare(password, user.password);
+// 		const userData = user.toJSON();
+// 		delete userData.password;
+// 		return isPasswordCorrect ? userData : null;
+// 	} catch (error) {
+// 		console.log(error);
+// 		return null;
+// 	}
+// };
 
 // UserSchema.pre('save', function (next, done) {});
 
-module.exports.default = mongoose.model('user', UserSchema);
-module.exports = { verifyCredentialsAndReturnUser };
+module.exports = mongoose.model('user', UserSchema);
+// module.exports = { verifyCredentialsAndReturnUser };

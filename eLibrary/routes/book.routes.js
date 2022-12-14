@@ -1,6 +1,6 @@
 const router = require('express').Router();
 const { BookController: Controller } = require('../controllers');
-const { validateSchema } = require('../middlewares');
+const { validateSchema, validateMongoId } = require('../middlewares');
 const { BookValidationSchema } = require('../validators');
 
 router
@@ -10,6 +10,7 @@ router
 
 router
 	.route('/:id')
+	.all(validateMongoId())
 	.get(Controller.getOne)
 	.patch(Controller.edit)
 	.put(Controller.edit)

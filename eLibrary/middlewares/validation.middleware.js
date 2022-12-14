@@ -1,4 +1,5 @@
-const { checkSchema, validationResult } = require('express-validator');
+const { checkSchema, validationResult, param } = require('express-validator');
+const { ObjectId } = require('mongoose').Types;
 
 const checkForErrors = (req, res, next) => {
 	const errors = validationResult(req);
@@ -8,8 +9,19 @@ const checkForErrors = (req, res, next) => {
 	next();
 };
 
-const validateSchema = (schema) => {
+const validateSchemaFn = (schema) => {
 	return [checkSchema(schema), checkForErrors];
 };
 
-module.exports = validateSchema;
+const validateMongoId = () => {
+	return (req, res, next) => {
+		const { id } = req.params;
+		const isValidMongoId = ObjectId.isValid(id);
+		if (isValidMongoId) {
+			return next();
+		}
+		res.status(400).send({ error: { message: 'Invalid MongoId' } });
+	};
+};
+
+module.exports = { validateMongoId, validateSchemaFn };

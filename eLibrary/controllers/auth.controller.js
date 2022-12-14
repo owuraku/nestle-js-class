@@ -1,6 +1,8 @@
 const { User } = require('../models');
 const jwt = require('jsonwebtoken');
 const { verifyCredentialsAndReturnUser } = require('../models/user.model');
+const { generateToken } = require('../utils');
+const { sendVerficationEmail } = require('../email');
 
 class AuthController {
 	async login(req, res) {
@@ -10,9 +12,7 @@ class AuthController {
 			const user = await verifyCredentialsAndReturnUser(email, password);
 			console.log(user);
 			if (!user) throw Error();
-			const accessToken = jwt.sign(user, process.env.SECRET_KEY, {
-				expiresIn: process.env.JWT_EXPIRES,
-			});
+			const accessToken = generateToken(user);
 			res.send({
 				accessToken,
 				message: 'Login successful',
@@ -36,6 +36,14 @@ class AuthController {
 			const user = new User({ name, email, password });
 			const savedUser = await user.save();
 			delete savedUser.password;
+
+			const verificationToken = generateToken(savedUser.email);
+			const verificationUrl = `${process.env.APP_URL}/auth/verify?token=${verificationToken}`;
+			sendVerficationEmail(
+				savedUser.name,
+				savedUser.email,
+				verificationUrl
+			);
 			res.send({ message: 'registration successful', data: savedUser });
 		} catch (error) {
 			console.log(error);
@@ -49,6 +57,20 @@ class AuthController {
 	async changePassword(req, res) {}
 
 	async resetPassword(req, res) {}
+
+	async verifyEmail(req, res) {
+		try {
+			const { token } = req.query;
+			const decodedEmail = jwt.verify(token, process.env.SECRET_KEY);
+			await User.findOneAndUpdate(
+				{ email: decodedEmail },
+				{ verified: true }
+			);
+			res.send({ message: 'Email verified' });
+		} catch (error) {
+			return res.status(400).send({ message: 'Invalid token' });
+		}
+	}
 }
 
 module.exports = new AuthController();

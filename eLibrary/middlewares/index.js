@@ -1,3 +1,9 @@
+const {
+	validateSchemaFn,
+	validateMongoId,
+} = require('./validation.middleware');
+
 module.exports = {
-	validateSchema: require('./validation.middleware'),
+	validateSchema: validateSchemaFn,
+	validateMongoId,
 };

@@ -13,14 +13,14 @@ class UserController {
 		// }
 
 		try {
-			const books = await User.find({
+			const users = await User.find({
 				...searchTerms,
 			})
 				// .limit(pagination.limit)
 				// .skip(pagination.skip)
 				// .sort({ name: -1 })
 				.exec();
-			res.send({ data: books });
+			res.send({ data: users });
 		} catch (err) {
 			console.log(err);
 			res.send({ data: [], message: 'An error occurred' });
@@ -29,7 +29,7 @@ class UserController {
 
 	// add a new Book
 	async add(req, res) {
-		const book = new Book({
+		const book = new User({
 			name: req.body.name,
 			description: req.body.description,
 			author: req.body.author,
@@ -62,29 +62,23 @@ class UserController {
 	// edit book details
 	async edit(req, res) {
 		const { id } = req.params;
-		const foundBook = await Book.findById(id);
-		if (!foundBook) {
+		const foundUser = await User.findById(id);
+		if (!foundUser) {
 			return res.status(404).send({
 				message: `Book with id ${id} not found`,
 			});
 		}
+		const { name, email } = req.body;
 
-		const newData = {
-			name: req.body.name,
-			description: req.body.description,
-			author: req.body.author,
-			volume: req.body.volume,
-			category: req.body.category,
-			filePath: req.body.filePath,
-		};
+		const newData = { name, email };
 
-		const updatedBook = await Book.findByIdAndUpdate(id, newData, {
+		const updatedUser = await User.findByIdAndUpdate(id, newData, {
 			new: true,
 		}).catch((err) => {
 			console.log(err);
 			return res.status(400).send({ message: 'Unable to update' });
 		});
-		res.send(updatedBook);
+		res.send(updatedUser);
 	}
 
 	// remove a book from the database
